@@ -1,0 +1,18 @@
+[
+    {
+        "date": "2026-01-21 02:23",
+        "score": 3,
+        "total": 18,
+        "percentage": 16.67,
+        "time_seconds": 12.84,
+        "avg_speed_per_q": 0.71
+    },
+    {
+        "date": "2026-01-21 02:34",
+        "score": 3,
+        "total": 18,
+        "percentage": 16.67,
+        "time_seconds": 10.84,
+        "avg_speed_per_q": 0.6
+    }
+]
