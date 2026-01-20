@@ -5,7 +5,7 @@ due to them not knowing where to start  and where to find resources which can gu
 This will be able to save the student from uneccesarily finding all of the past PYQ(past question paper) of board exams(especially the pre boards) and wasitng time.
 
 #FEATURES:
-REGEX Parsing ,JSON Export
+REGEX Parsing ,JSON Export,quiz
 
 #SYSTEM:
 automated exctraction from pyq
