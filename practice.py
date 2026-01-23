@@ -76,3 +76,5 @@ print(f"b,w found by gradient descent: {b_final},{w_final} ")
 m= X_train.shape[0]
 for i in range(m): #print predictions for each house
     print(f"prediction: {np.dot(X_train[i], w_final) + b_final:0.2f}, target value: {y_train[i]}")
+
+

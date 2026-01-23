@@ -36,10 +36,39 @@ def update_weight(question_num, is_correct):
     weights[q_key] = new_weight
     save_mastery(weights)
 
+def show_mastery_report():
+    weights = load_mastery()
+    if not weights:
+        print("\n[!] No mastery data found. Try a few questions first!")
+        return
+
+    # Sort to show highest weights (hardest questions) first
+    sorted_items = sorted(weights.items(), key=lambda x: x[1], reverse=True)
+
+    print("🔥 YOUR TOP 5 WEAK SPOTS")
+    print("-"*40)
+    
+    # We'll show the top 5 or fewer if you haven't done 5 yet
+    for q_num, weight in sorted_items[:5]:
+        status = "🔴 CRITICAL" if weight > 30 else "🟠 STRUGGLING"
+        print(f"Question {q_num:3} | Weight: {weight:2} | {status}")
+    print("="*40)
+
 def get_smart_questions(all_questions, num_to_pick=10):
     weights_data = load_mastery()
-    w_list = [weights_data.get(str(q['number']), 10) for q in all_questions]
-    return random.choices(all_questions, weights=w_list, k=min(num_to_pick, len(all_questions)))
+    scored_questions = []
+    
+    for q in all_questions:
+        w = weights_data.get(str(q['number']), 10)
+        # Calculate priority score
+        score = random.random() ** (1.0 / w) 
+        scored_questions.append((score, q))
+    
+    # Sort by score (descending)
+    scored_questions.sort(key=lambda x: x[0], reverse=True)
+    
+    # Return only the question part of the top pairs
+    return [q for score, q in scored_questions[:num_to_pick]]
 
 def save_stats(score, total, time_taken, missed_ids):
     history = load_data(HISTORY_FILE)
@@ -97,12 +126,16 @@ def run_quiz(review_filter=None, smart_selection=None):
     print(f"\nDONE! Score: {score}/{len(questions)}")
 
 if __name__ == "__main__":
-    print("1. Full Quiz\n2. Review Mistakes\n3. Smart Adaptive Mode")
-    choice = input("Select (1/2/3): ")
+    print("1. Full Quiz\n2. Review Mistakes\n3. Smart Adaptive Mode\n4. Show Mastery Report")
+    choice = input("Select (1/2/3/4): ")
     if choice == '2':
         hist = load_data(HISTORY_FILE)
         if hist: run_quiz(review_filter=hist[-1].get("missed_questions", []))
     elif choice == '3':
-        run_quiz(smart_selection=get_smart_questions(load_data(DATA_FILE)))
+        all_q = load_data(DATA_FILE)
+        smart_q = get_smart_questions(all_q) # This now uses our "Weighted Shuffle" logic
+        run_quiz(smart_selection=smart_q)
+    elif choice == '4':
+        show_mastery_report()
     else:
         run_quiz()
